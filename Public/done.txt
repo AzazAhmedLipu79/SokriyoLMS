@@ -1,0 +1,3 @@
+Jwt Implement, Register , LOGIN JWT 
+Login - Verify 
+Register - Create, Ban/Unban, BioUpdate 

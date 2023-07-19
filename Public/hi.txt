@@ -1,0 +1,107 @@
+Course:
+Title, 
+Category,
+Price,
+Review,
+Instructors, 
+Description,    
+Duration, 
+Classes, 
+Assignments, 
+Total Enrolled, 
+Notice,
+Prizes,
+Deadline
+
+
+{
+  "title": "Machine Learning For Noob",
+  "description": "A constructive learning plan for machine learning by python. Where we'll cover most of overview of machine learnign",
+  "thumbnail": "https://www.freecodecamp.org/news/content/images/2022/01/machine-learning-banner-2.png",
+  "duration": "28Hours and 47 minutes",
+  "deadline": "27 December, 2023",
+  "price": "699",
+  "what_learn": "Machine Learning or automatic learning is a scientific field,and more specifically a subcategory of artificial intelligence|It consists of letting algorithms discover “patterns”, namelyrecurring patterns, in data sets. This data can be numbers, words,images, statistics...|Anything that can be stored digitally can serve as data for Machine Learning.|By detecting patterns in this data, algorithms learn and improve their performance in performing a specific task.",
+  "blog_id": "102"
+}
+
+{
+  "title": "Machine Learning With Python",
+  "description": "A constructive learning plan for machine learning by python. Where we'll cover most of overview of machine learnign",
+  "thumbnail": "https://www.freecodecamp.org/news/content/images/2022/01/machine-learning-banner-2.png",
+  "duration": "28Hours and 47 minutes",
+  "deadline": "27 December, 2023",
+  "price": "699",
+  "content": "Machine Learning or automatic learning is a scientific field,and more specifically a subcategory of artificial intelligence|It consists of letting algorithms discover “patterns”, namelyrecurring patterns, in data sets. This data can be numbers, words,images, statistics...|Anything that can be stored digitally can serve as data for Machine Learning.|By detecting patterns in this data, algorithms learn and improve their performance in performing a specific task.",
+  "blog_id": "102",
+  "isActive":false
+}
+
+ try {
+    let LessonQuery = "";
+    // Create a query string that selects all records from the blog table
+    const CourseQuery = "SELECT slug FROM course where cid = ? ";
+
+    // Execute the query using the connection object and await for the result
+    // The result is an array of objects that represent each blog post
+    const [course, _] = await pool.query(CourseQuery, [courseId]);
+    if (course[0]?.slug) {
+      // ADD DATA TO LESSON TABLE
+
+      if (content_type == CONTENT_TYPE.DOCUMENT) {
+        LessonQuery =
+          "INSERT INTO Lesson ( cid, title,content_type,content) VALUES( ?,?, ?, ?);";
+        const [result, _] = await pool.query(LessonQuery, [
+          courseId,
+          title,
+          content_type,
+          content,
+        ]);
+        if (result?.affectedRows) {
+          return res.status(201).json({
+            success: true,
+            lesson: result.insertId,
+            msg: "Lesson Added Successfully",
+          });
+        } else {
+          return res.status(500).json({
+            success: false,
+            msg: "Lesson COULD NOT BE ADDED",
+            courseId: result.insertId,
+          });
+        }
+      } else if (content_type == CONTENT_TYPE.VIDEO) {
+        LessonQuery =
+          "INSERT INTO Lesson ( cid,title,content_type,origin) VALUES(?, ?,?, ?);";
+        const [result, _] = await pool.query(LessonQuery, [
+          courseId,
+          title,
+          content_type,
+          origin,
+        ]);
+        if (result?.affectedRows) {
+          return res.status(201).json({
+            success: true,
+            lesson: result.insertId,
+            msg: "Lesson Added Successfully",
+          });
+        } else {
+          return res.status(500).json({
+            success: false,
+            msg: "Lesson COULD NOT BE ADDED",
+            courseId: result.insertId,
+          });
+        }
+      } else {
+        return res.status(400).json({
+          success: false,
+          msg: "Invalid Content Type Provided",
+        });
+      }
+    } else {
+      return res.status(400).json({
+        success: false,
+        msg: "Invalid Course ID",
+      });
+    }
+  }
